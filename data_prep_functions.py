@@ -84,8 +84,9 @@ def get_movie_info(moviecode_list, filename = f"{datetime.now()}.json"):
     data = []
 
     for moviecode in moviecode_list:
+        moviecode = str(moviecode)
         path = ("http://www.kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieInfo.json"
-                + "?key=d3e95adbe4f2171c5c869d03afa93dae" # keys : d3e95adbe4f2171c5c869d03afa93dae / 9511b15ed35f976dff1642647019125c
+                + "?key=9511b15ed35f976dff1642647019125c" # keys : d3e95adbe4f2171c5c869d03afa93dae / 9511b15ed35f976dff1642647019125c
                 + "&movieCd=" + moviecode)
         with urllib.request.urlopen(path) as url:
             original_data = json.load(url)
