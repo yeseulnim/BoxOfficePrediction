@@ -4,7 +4,7 @@ from datetime import date
 from datetime import timedelta
 from datetime import datetime
 import pandas as pd
-
+from sklearn.preprocessing import MultiLabelBinarizer
 
 def get_weekend_box_office(end_date:date,numdays:int, commercial = "Y", nation = "F", filename = f"{datetime.now()}.json"):
     start = datetime.now()
@@ -108,3 +108,128 @@ def get_movie_info(moviecode_list, filename = f"{datetime.now()}.json"):
         json.dump(data,f)
     f.close()
     print(f"runtime:{datetime.now() - start}")
+
+
+def extract_movie_info(movie_data):
+    genres = tuple(genre['genreNm'] for genre in movie_data[9])
+
+    production_companies = set(
+        company['companyNm']
+        for company in movie_data[10]
+        if company['companyPartNm'] == '제작사'
+    )
+
+    distribution_companies = set(
+        company['companyNm']
+        for company in movie_data[10]
+        if company['companyPartNm'] == '배급사'
+    )
+
+    importation_companies = set(
+        company['companyNm']
+        for company in movie_data[10]
+        if company['companyPartNm'] == '수입사'
+    )
+
+    investor_count = len(set(
+        company['companyNm']
+        for company in movie_data[10]
+        if company['companyPartNm'] in ('제공','공동제공')
+    ))
+
+    company_count = len(set(
+        company['companyNm']
+        for company in movie_data[10]
+    ))
+
+    staff_count = len(movie_data[12])
+
+    return{
+        'movie_code' : movie_data[0],
+        'movie_name' : movie_data[1],
+        'movie_name_en' : movie_data[2],
+        'runtime' : movie_data[3],
+        'prod_year' : movie_data[4],
+        'open_date' : movie_data[5],
+        'prod_stat' : movie_data[6],
+        'type' : movie_data[7],
+        'nation' : movie_data[8],
+        'genre' : genres,
+        'production_companies' : production_companies,
+        'distribution_companies' : distribution_companies,
+        'importation_companies' : importation_companies,
+        'investor_count' : investor_count,
+        'company_count' : company_count,
+        'staff_count' : staff_count,
+        'rating' : movie_data[11]
+    }
+
+def categorize_companies(companies):
+    categorized = []
+    for company in companies:
+        # standardize names to major distributors & etc
+        company = standardize_company_name(company)
+        categorized.append(company)
+    return tuple(set(categorized))
+
+def standardize_company_name(company):
+    if company in ['롯데쇼핑㈜롯데시네마', '롯데쇼핑㈜롯데엔터테인먼트', '롯데컬처웍스(주)롯데엔터테인먼트']:
+        return 'Lotte'
+    elif company in ['(주)씨제이이엔엠', 'CJ ENM']:
+        return 'CJ ENM'
+    elif company in ['씨너스엔터테인먼트(주)', '플러스엠 엔터테인먼트']:
+        return 'PlusM'
+    elif company == '(주)쇼박스':
+        return 'ShowBox'
+    elif company == '(주)넥스트엔터테인먼트월드(NEW)':
+        return 'NEW'
+    elif company in ['워너 브러더스 픽쳐스', '워너브러더스 코리아(주)', '워너브러더스사㈜']:
+        return 'Warner'
+    elif company in ['월트디즈니컴퍼니코리아 유한책임회사', '월트디즈니컴퍼니코리아(주)', '소니픽쳐스릴리징월트디즈니스튜디오스코리아(주)']:
+        return 'Disney'
+    elif company == '유니버설픽쳐스인터내셔널 코리아(유)':
+        return 'Universal'
+    else:
+        return 'etc'
+
+def standardize_nation_name(nation):
+    if nation == '한국':
+        return 'Korea'
+    elif nation == '미국':
+        return 'USA'
+    elif nation == '일본':
+        return 'Japan'
+    else:
+        return 'etc'
+
+def standardize_type_name(type):
+    if type == '장편':
+        return 'longform'
+    else:
+        return 'etc'
+
+def standardize_ratings(rating):
+    if rating == '전체관람가':
+        return 'all'
+    elif rating == '12세이상관람가':
+        return '12'
+    elif rating == '15세이상관람가':
+        return '15'
+    elif rating == '청소년관람불가':
+        return '18'
+    else:
+        return 'etc'
+
+
+def one_hot_encode_column(df, column_name, prefix):
+    # Convert the column to a list of lists
+    series = df[column_name].fillna('').apply(lambda x: [x] if isinstance(x, str) else x)
+
+    mlb = MultiLabelBinarizer()
+    encoded = mlb.fit_transform(series)
+    encoded_df = pd.DataFrame(encoded, columns=[f"{prefix}_{cls}" for cls in mlb.classes_], index=df.index)
+
+    # Drop the original column and concatenate the encoded columns
+    result_df = pd.concat([df.drop(columns=[column_name]), encoded_df], axis=1)
+
+    return result_df

@@ -23,4 +23,5 @@ moviecodes_1, moviecodes_2 = moviecodes[:len(moviecodes)//2], moviecodes[len(mov
 print(len(moviecodes_1))
 print(len(moviecodes_2))
 
+get_movie_info(moviecodes_1,"movie_info_1.json") # can only get one at a time due to api limitations
 get_movie_info(moviecodes_2,"movie_info_2.json")
