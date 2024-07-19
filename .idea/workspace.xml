@@ -4,11 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cf6318d3-8f4e-4453-8e29-142ec4ae4287" name="Changes" comment="- movie info data import finished">
+    <list default="true" id="cf6318d3-8f4e-4453-8e29-142ec4ae4287" name="Changes" comment="- Finished Data Prep&#10;- Data Exploration : Shallow Decision Tree&#10;- Modelling : Linear Regression">
+      <change afterPath="$PROJECT_DIR$/modelling.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modelling_functions.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/score_scrap.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/score_scrap_function.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data_prep_functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_prep_functions.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/movie_data_import.py" beforeDir="false" afterPath="$PROJECT_DIR$/movie_data_import.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_prep.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,15 +36,19 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Python.data_import.executor&quot;: &quot;Run&quot;,
-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
-    &quot;Python.movie_data_import.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python.data_import.executor": "Run",
+    "Python.data_prep.executor": "Run",
+    "Python.main.executor": "Run",
+    "Python.modelling.executor": "Run",
+    "Python.modelling_functions.executor": "Run",
+    "Python.movie_data_import.executor": "Run",
+    "Python.score_scrap.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "master"
   }
-}</component>
+}]]></component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -83,12 +89,21 @@
       <option name="project" value="LOCAL" />
       <updated>1721130417760</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="- Finished Data Prep&#10;- Data Exploration : Shallow Decision Tree&#10;- Modelling : Linear Regression">
+      <option name="closed" value="true" />
+      <created>1721223591644</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1721223591644</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="- box office data import finished&#10;- movie info data import unfinished (hit api limit)" />
     <MESSAGE value="- movie info data import finished" />
-    <option name="LAST_COMMIT_MESSAGE" value="- movie info data import finished" />
+    <MESSAGE value="- Finished Data Prep&#10;- Data Exploration : Shallow Decision Tree&#10;- Modelling : Linear Regression" />
+    <option name="LAST_COMMIT_MESSAGE" value="- Finished Data Prep&#10;- Data Exploration : Shallow Decision Tree&#10;- Modelling : Linear Regression" />
   </component>
 </project>
