@@ -9,6 +9,7 @@ from data_prep_functions import standardize_type_name
 from data_prep_functions import standardize_nation_name
 from data_prep_functions import standardize_ratings
 from data_prep_functions import one_hot_encode_column
+from score_scrap_function import get_star_rating
 '''---------------------------------------------------------'''
 '''Display setting'''
 # display all columns
@@ -39,31 +40,43 @@ f.close()
 with open('data/movie_info_2.json') as f:
     movie_info_2 = json.load(f)
 f.close()
+'''-----------------------------------------------------'''
 
-'''------------------------------------------------------'''
-'''Movie data 조정 1'''
-# read all movie info into one file, 'movie_info'
+#read from csv
+movie_1 = pd.read_csv("data/movie_data_1.csv")
+movie_2 = pd.read_csv("data/movie_data_2.csv")
+
+movie = pd.concat([movie_1, movie_2])
+
+movie['movie_code'] = movie['movie_code'].astype(str)
+
+
+'''-----------------------------------------------------'''
 movie_info = movie_info_1 + movie_info_2
-print(len(movie_info))
-
-del movie_info_1
-del movie_info_2
-
-# extract relavant information from movie_info
 movie_data = pd.DataFrame([extract_movie_info(movie) for movie in movie_info])
+print(movie_data.head())
+movie_data['movie_code'] = movie_data['movie_code'].astype(str)
 
-#drop empty values
-movie_data = movie_data[(movie_data != '').all(axis=1)]
+
+movie_data = movie_data.merge(
+    movie[['movie_code', 'star_ratings']],
+    on='movie_code',
+    how='left'
+)
+
+'''-----------------------------------------------------'''
 
 # print stats for movie_data
 print(f"Total movie count: {len(movie_data)}")
 print(f"samples: {movie_data.head()}")
 print(f"columns : {movie_data.columns}")
 
-
+'''-----------------------------------------------------'''
 # 개봉일자 주차로 바꿈 # int64
 movie_data["open_week"] = pd.to_datetime(movie_data['open_date']).dt.year * 100 + pd.to_datetime(movie_data['open_date']).dt.isocalendar().week
 movie_data['open_week'] = movie_data['open_week'].astype(str)
+'''-----------------------------------------------------'''
+movie_data['movie_code'] = movie_data['movie_code'].astype(str)
 
 '''-----------------------------------'''
 '''Box Office data 조정'''
@@ -82,9 +95,17 @@ movie_types = [
     (data_nf, 'nf')
 ]
 box_office_data = pd.concat([data.assign(source=name) for data, name in movie_types], ignore_index=True)
+'''-----------------------------------'''
+'''drop na'''
 
-#dropna
 box_office_data = box_office_data[(box_office_data != '').all(axis=1)]
+movie_data = movie_data[(movie_data != '').all(axis=1)]
+'''-----------------------------------'''
+'''drop rating 0s'''
+movie_data = movie_data[(movie_data['star_ratings'] != 0)]
+
+
+'''-----------------------------------'''
 
 # 박스 오피스 데이터 칼럼 붙임
 box_office_data.rename(columns={0: "Date", 1: "FirstBOWeek", 2: "Rank", 3: "movie_code", 4: "movie_name", 5: "open_date",

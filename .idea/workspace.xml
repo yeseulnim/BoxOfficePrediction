@@ -4,13 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cf6318d3-8f4e-4453-8e29-142ec4ae4287" name="Changes" comment="- Finished Data Prep&#10;- Data Exploration : Shallow Decision Tree&#10;- Modelling : Linear Regression">
-      <change afterPath="$PROJECT_DIR$/modelling.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modelling_functions.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/score_scrap.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/score_scrap_function.py" afterDir="false" />
+    <list default="true" id="cf6318d3-8f4e-4453-8e29-142ec4ae4287" name="Changes" comment="- Modelling : Linear Regression, Multiple Regression, Random Forest Regression &#10;+ Plotting&#10;&#10;- Created Score Scraping function">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_prep.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_prep.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_prep.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/score_scrap.py" beforeDir="false" afterPath="$PROJECT_DIR$/score_scrap.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/score_scrap_function.py" beforeDir="false" afterPath="$PROJECT_DIR$/score_scrap_function.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,6 +43,7 @@
     "Python.modelling_functions.executor": "Run",
     "Python.movie_data_import.executor": "Run",
     "Python.score_scrap.executor": "Run",
+    "Python.score_scrap_function.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "master"
   }
@@ -97,13 +96,22 @@
       <option name="project" value="LOCAL" />
       <updated>1721223591644</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="- Modelling : Linear Regression, Multiple Regression, Random Forest Regression &#10;+ Plotting&#10;&#10;- Created Score Scraping function">
+      <option name="closed" value="true" />
+      <created>1721398649387</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1721398649387</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="- box office data import finished&#10;- movie info data import unfinished (hit api limit)" />
     <MESSAGE value="- movie info data import finished" />
     <MESSAGE value="- Finished Data Prep&#10;- Data Exploration : Shallow Decision Tree&#10;- Modelling : Linear Regression" />
-    <option name="LAST_COMMIT_MESSAGE" value="- Finished Data Prep&#10;- Data Exploration : Shallow Decision Tree&#10;- Modelling : Linear Regression" />
+    <MESSAGE value="- Modelling : Linear Regression, Multiple Regression, Random Forest Regression &#10;+ Plotting&#10;&#10;- Created Score Scraping function" />
+    <option name="LAST_COMMIT_MESSAGE" value="- Modelling : Linear Regression, Multiple Regression, Random Forest Regression &#10;+ Plotting&#10;&#10;- Created Score Scraping function" />
   </component>
 </project>

@@ -24,14 +24,19 @@ def get_star_rating(movie_name, movie_year, movie_country):
         # Find all movie title elements
         movie_titles = movie_list.find_elements(By.CLASS_NAME, "fyDfz.qz3Mr")
         movie_info = movie_list.find_elements(By.CLASS_NAME, "zal_L.G41oJ")
+        movie_check = movie_list.find_elements(By.CLASS_NAME, "zal_L.ma29X")
+
 
         # Extract and print movie names
-        for idx, title in enumerate(movie_titles):
-            info = movie_info[idx]
-            if title.text == movie_name and info.text == f"{movie_year} ・ {movie_country}":
-                title.click()
-                sleep(5)
-                break
+        if len(movie_titles) == 1:
+            movie_titles[0].click()
+        else:
+            for idx, title in enumerate(movie_titles):
+                info = movie_info[idx]
+                check = movie_check[idx]
+                if title.text == movie_name and info.text.startswith(f"{movie_year}") and check.text == "영화":
+                    title.click()
+                    break
 
         star_rating = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.CLASS_NAME, "bunOX.QCY16"))
@@ -46,7 +51,7 @@ def get_star_rating(movie_name, movie_year, movie_country):
     return star_rating
 
 
-#print(get_star_rating("괴물","2006","한국"))
+#print(get_star_rating("괴불","2006","한국"))
 
 
 
