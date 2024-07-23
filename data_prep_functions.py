@@ -3,6 +3,7 @@ import json
 from datetime import date
 from datetime import timedelta
 from datetime import datetime
+from time import sleep
 import pandas as pd
 from sklearn.preprocessing import MultiLabelBinarizer
 
@@ -14,34 +15,42 @@ def get_weekend_box_office(end_date:date,numdays:int, commercial = "Y", nation =
 
     for date in date_list:
         path = ("http://kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchWeeklyBoxOfficeList.json"
-                + "?key=9511b15ed35f976dff1642647019125c" # keys : d3e95adbe4f2171c5c869d03afa93dae / 9511b15ed35f976dff1642647019125c
+                + "?key=d3e95adbe4f2171c5c869d03afa93dae" # keys : d3e95adbe4f2171c5c869d03afa93dae / 9511b15ed35f976dff1642647019125c
                 + "&multiMovieYn=" + commercial
                 + "&repNationCd=" + nation
                 + "&targetDt=" + date)
-        with urllib.request.urlopen(path) as url:
-            original_data = json.load(url)
-            for i in range(10):
-                try: # try-except because some weeks have less than 10 rows
-                    data.append([date,
-                             original_data["boxOfficeResult"]['yearWeekTime'],
-                             i,
-                             original_data["boxOfficeResult"]["weeklyBoxOfficeList"][i]["movieCd"],
-                             original_data["boxOfficeResult"]["weeklyBoxOfficeList"][i]["movieNm"],
-                             original_data["boxOfficeResult"]["weeklyBoxOfficeList"][i]["openDt"],
-                             original_data["boxOfficeResult"]["weeklyBoxOfficeList"][i]["salesAmt"],
-                             original_data["boxOfficeResult"]["weeklyBoxOfficeList"][i]["salesShare"],
-                             original_data["boxOfficeResult"]["weeklyBoxOfficeList"][i]["salesInten"],
-                             original_data["boxOfficeResult"]["weeklyBoxOfficeList"][i]["salesChange"],
-                             original_data["boxOfficeResult"]["weeklyBoxOfficeList"][i]["salesAcc"],
-                             original_data["boxOfficeResult"]["weeklyBoxOfficeList"][i]["audiCnt"],
-                             original_data["boxOfficeResult"]["weeklyBoxOfficeList"][i]["audiInten"],
-                             original_data["boxOfficeResult"]["weeklyBoxOfficeList"][i]["audiChange"],
-                             original_data["boxOfficeResult"]["weeklyBoxOfficeList"][i]["audiAcc"],
-                             original_data["boxOfficeResult"]["weeklyBoxOfficeList"][i]["scrnCnt"],
-                             original_data["boxOfficeResult"]["weeklyBoxOfficeList"][i]["showCnt"]
-                            ])
-                except:
-                    pass
+
+        for attempt in range(5):
+            try:
+                with urllib.request.urlopen(path) as url:
+                    original_data = json.load(url)
+                    for i in range(10):
+                        try: # try-except because some weeks have less than 10 rows
+                            data.append([date,
+                                     original_data["boxOfficeResult"]['yearWeekTime'],
+                                     i,
+                                     original_data["boxOfficeResult"]["weeklyBoxOfficeList"][i]["movieCd"],
+                                     original_data["boxOfficeResult"]["weeklyBoxOfficeList"][i]["movieNm"],
+                                     original_data["boxOfficeResult"]["weeklyBoxOfficeList"][i]["openDt"],
+                                     original_data["boxOfficeResult"]["weeklyBoxOfficeList"][i]["salesAmt"],
+                                     original_data["boxOfficeResult"]["weeklyBoxOfficeList"][i]["salesShare"],
+                                     original_data["boxOfficeResult"]["weeklyBoxOfficeList"][i]["salesInten"],
+                                     original_data["boxOfficeResult"]["weeklyBoxOfficeList"][i]["salesChange"],
+                                     original_data["boxOfficeResult"]["weeklyBoxOfficeList"][i]["salesAcc"],
+                                     original_data["boxOfficeResult"]["weeklyBoxOfficeList"][i]["audiCnt"],
+                                     original_data["boxOfficeResult"]["weeklyBoxOfficeList"][i]["audiInten"],
+                                     original_data["boxOfficeResult"]["weeklyBoxOfficeList"][i]["audiChange"],
+                                     original_data["boxOfficeResult"]["weeklyBoxOfficeList"][i]["audiAcc"],
+                                     original_data["boxOfficeResult"]["weeklyBoxOfficeList"][i]["scrnCnt"],
+                                     original_data["boxOfficeResult"]["weeklyBoxOfficeList"][i]["showCnt"]
+                                    ])
+                        except:
+                            pass
+                break
+            except HTTPError as e:
+                if e.code == 503 and attempt < max_retries -1:
+                    print(f"Attempt {attempt+1} failed. Retrying in 5 seconds...")
+                    sleep(5)
     with open('data/'+ filename,'w')as f:
         json.dump(data,f)
     f.close()
@@ -71,15 +80,19 @@ def prepare_data(data):
     data.drop(data[(data["OpenDate"] == " ")].index, inplace=True)
     data["OpenDate"] = pd.to_datetime(data["OpenDate"]).dt.date
 
-    #2010 - 2019
+    # 2010 - 2019
     # drop rows where opening date is before 2010 or after 2019
-    #data.drop(data[(data["OpenDate"] > date(2019, 12, 31))].index, inplace=True)
-    #data.drop(data[(data["OpenDate"]) < date(2010, 1, 1)].index, inplace=True)
+    # data.drop(data[(data["OpenDate"] > date(2019, 12, 31))].index, inplace=True)
+    # data.drop(data[(data["OpenDate"]) < date(2010, 1, 1)].index, inplace=True)
 
-    #2023
+    # 2023
     # drop rows where opening date is before 2023 or after 2023
-    data.drop(data[(data["OpenDate"] > date(2023, 12, 31))].index, inplace=True)
-    data.drop(data[(data["OpenDate"]) < date(2023, 1, 1)].index, inplace=True)
+    # data.drop(data[(data["OpenDate"] > date(2023, 12, 31))].index, inplace=True)
+    # data.drop(data[(data["OpenDate"]) < date(2023, 1, 1)].index, inplace=True)
+
+    # 2020 Feb
+    data.drop(data[(data["OpenDate"] > date(2020, 2, 29))].index, inplace=True)
+    data.drop(data[(data["OpenDate"]) < date(2020, 2, 1)].index, inplace=True)
 
     print(f"Cleaned data length:{len(data)}")
     return data
@@ -92,7 +105,7 @@ def get_movie_info(moviecode_list, filename = f"{datetime.now()}.json"):
     for moviecode in moviecode_list:
         moviecode = str(moviecode)
         path = ("http://www.kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieInfo.json"
-                + "?key=d3e95adbe4f2171c5c869d03afa93dae" # keys : d3e95adbe4f2171c5c869d03afa93dae / 9511b15ed35f976dff1642647019125c
+                + "?key=9511b15ed35f976dff1642647019125c" # keys : d3e95adbe4f2171c5c869d03afa93dae / 9511b15ed35f976dff1642647019125c
                 + "&movieCd=" + moviecode)
         with urllib.request.urlopen(path) as url:
             original_data = json.load(url)

@@ -18,7 +18,7 @@ data_nk = pd.read_csv('data/data_nk.csv')
 
 
 moviecodes = pd.concat([data_cf["MovieCode"],data_ck["MovieCode"],data_nf["MovieCode"],data_nk["MovieCode"]], ignore_index = True)
-moviecodes = list(set(moviecodes)) # 2010-2019 : 4514 movies / 2023 : 49 movies
+moviecodes = list(set(moviecodes)) # 2010-2019 : 4514 movies / 2023 : 414 movies / 2020 Feb : 32 movies
 moviecodes_1, moviecodes_2 = moviecodes[:len(moviecodes)//2], moviecodes[len(moviecodes)//2:]
 print(len(moviecodes_1))
 print(len(moviecodes_2))

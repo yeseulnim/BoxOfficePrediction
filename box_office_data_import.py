@@ -10,9 +10,12 @@ from data_prep_functions import prepare_data
 # num_days = 3712 # 3650 + 31 (Jan) + 29 (Feb) + 2 (leap year)
 
 # 2023
-end_date = date(2023,1,31)
-num_days = 395 # 365 + 31 (Jan) + 29 (Feb)
+# end_date = date(2024,2,29)
+# num_days = 395 # 365 + 31 (Jan) + 29 (Feb)
 
+# 2020 Feb
+end_date = date(2020,4,30)
+num_days = 90 # 29 (Feb) + 31 (Mar) + 30 (Apr)
 
 get_weekend_box_office(end_date,numdays= num_days,
                        commercial = "Y", nation = "F", filename = "commercial_foreign.json")
@@ -43,6 +46,7 @@ f.close()
 
 data_list = [data_cf,data_ck,data_nf,data_nk]
 
+
 '''prepare data'''
 data_cf = prepare_data(data_cf)
 data_ck = prepare_data(data_ck)
@@ -54,4 +58,5 @@ data_cf.to_csv("data/data_cf.csv", sep = ",", na_rep = "NaN")
 data_ck.to_csv("data/data_ck.csv", sep = ",", na_rep = "NaN")
 data_nf.to_csv("data/data_nf.csv", sep = ",", na_rep = "NaN")
 data_nk.to_csv("data/data_nk.csv", sep = ",", na_rep = "NaN")
+
 
