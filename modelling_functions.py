@@ -5,7 +5,11 @@ from sklearn.tree import DecisionTreeRegressor
 from sklearn.tree import plot_tree
 from sklearn.linear_model import LinearRegression
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.cluster import KMeans
+import xgboost
+
+
+import pickle
+
 
 
 def get_X_and_y(filename):
@@ -50,25 +54,31 @@ def regression_acc(X_train, X_test,y_train,y_test):
     lin.fit(X_train_audience, y_train)
     print(f"Simple Linear Regression Accuracy : {lin.score(X_test_audience, y_test)}")
     simple_result = lin.score(X_test_audience, y_test)
+
+    model1 = pickle.dumps(lin)
+
     # fit multiple linear regression
     lin.fit(X_train, y_train)
     print(f"Multiple Linear Regression Accuracy : {lin.score(X_test, y_test)}")
     multiple_result = lin.score(X_test, y_test)
-    return simple_result, multiple_result
 
-def histogram_two(list1, list2, filename):
+    model2 = pickle.dumps(lin)
+
+    return model1, model2, simple_result, multiple_result
+
+def histogram_two(list1, list2, label1, label2, title, filename):
     plt.figure(figsize = (12,4))
     X_ticks = ['All Movies','Commercial Korean', 'Commercial Foreign','Non-Commercial Korean','Non-Commercial Foreign']
 
     X_axis = np.arange(len(X_ticks))
 
-    plt.bar(X_axis - 0.2, list1, 0.4, label='Simple LinReg')
-    plt.bar(X_axis + 0.2, list2, 0.4, label='Multiple LinReg')
+    plt.bar(X_axis - 0.2, list1, 0.4, label=label1)
+    plt.bar(X_axis + 0.2, list2, 0.4, label=label2)
 
     plt.xticks(X_axis, X_ticks)
     plt.xlabel("Groups")
     plt.ylabel("Accuracy")
-    plt.title("First Weekend Audience : Relevance to Final Audience")
+    plt.title(title)
     plt.legend()
     plt.tight_layout
     plt.savefig(f"figures/{filename}")
@@ -76,23 +86,40 @@ def histogram_two(list1, list2, filename):
 
 
 def randomforest_acc(X_train, X_test,y_train,y_test):
-    X_train_audience = pd.DataFrame(X_train['AudienceCount'])
-    X_test_audience = pd.DataFrame(X_test['AudienceCount'])
-    ran = RandomForestRegressor(n_estimators=200, criterion="squared_error", min_samples_leaf=5, min_samples_split=5, max_depth=5)
-    ran.fit(X_train_audience, y_train)
-    print(f"Random Forest Accuracy : {ran.score(X_test_audience, y_test)}")
+    ran = RandomForestRegressor(n_estimators=300, criterion="poisson", min_samples_leaf=3, min_samples_split=7, max_depth=20)
+    ran.fit(X_train, y_train)
+    print(f"Random Forest Accuracy : {ran.score(X_test, y_test)}")
 
-    return ran.score(X_test_audience, y_test)
+    model = pickle.dumps(ran)
+
+    return model, ran.score(X_test, y_test)
+
+def xgboost_acc(X_train, X_test,y_train,y_test):
+    xgb = xgboost.XGBRegressor()
+    xgb.fit(X_train, y_train)
+    print(f"XGBoost Accuracy : {xgb.score(X_test, y_test)}")
+
+    model = pickle.dumps(xgb)
+
+    return model, xgb.score(X_test, y_test)
 
 
-def kmeans_clustering(filename):
-    data = pd.read_csv(f'data/{filename}')
-    columns = data.columns
-    kme = KMeans(n_clusters = 2)
-    kme.fit(data)
-    clusters = pd.DataFrame(kme.cluster_centers_)
-    clusters.columns = columns
-    return clusters
+def histogram_two_for_clusters(list1, list2, label1, label2, title, filename):
+    plt.figure(figsize = (12,4))
+    X_ticks = ['NC Korean - 1', 'NC Korean - 2', 'NC Korean - 3',
+               'NC Foreign - 1', 'NC Foreign - 2', 'NC Foreign - 3']
 
+    X_axis = np.arange(len(X_ticks))
 
+    plt.bar(X_axis - 0.2, list1, 0.4, label=label1)
+    plt.bar(X_axis + 0.2, list2, 0.4, label=label2)
+
+    plt.xticks(X_axis, X_ticks)
+    plt.xlabel("Groups")
+    plt.ylabel("Accuracy")
+    plt.title(title)
+    plt.legend()
+    plt.tight_layout
+    plt.savefig(f"figures/{filename}")
+    #plt.show()
 

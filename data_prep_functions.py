@@ -71,9 +71,15 @@ def prepare_data(data):
     data.drop(data[(data["OpenDate"] == " ")].index, inplace=True)
     data["OpenDate"] = pd.to_datetime(data["OpenDate"]).dt.date
 
+    #2010 - 2019
     # drop rows where opening date is before 2010 or after 2019
-    data.drop(data[(data["OpenDate"] > date(2019, 12, 31))].index, inplace=True)
-    data.drop(data[(data["OpenDate"]) < date(2010, 1, 1)].index, inplace=True)
+    #data.drop(data[(data["OpenDate"] > date(2019, 12, 31))].index, inplace=True)
+    #data.drop(data[(data["OpenDate"]) < date(2010, 1, 1)].index, inplace=True)
+
+    #2023
+    # drop rows where opening date is before 2023 or after 2023
+    data.drop(data[(data["OpenDate"] > date(2023, 12, 31))].index, inplace=True)
+    data.drop(data[(data["OpenDate"]) < date(2023, 1, 1)].index, inplace=True)
 
     print(f"Cleaned data length:{len(data)}")
     return data
@@ -86,7 +92,7 @@ def get_movie_info(moviecode_list, filename = f"{datetime.now()}.json"):
     for moviecode in moviecode_list:
         moviecode = str(moviecode)
         path = ("http://www.kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieInfo.json"
-                + "?key=9511b15ed35f976dff1642647019125c" # keys : d3e95adbe4f2171c5c869d03afa93dae / 9511b15ed35f976dff1642647019125c
+                + "?key=d3e95adbe4f2171c5c869d03afa93dae" # keys : d3e95adbe4f2171c5c869d03afa93dae / 9511b15ed35f976dff1642647019125c
                 + "&movieCd=" + moviecode)
         with urllib.request.urlopen(path) as url:
             original_data = json.load(url)

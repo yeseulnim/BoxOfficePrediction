@@ -5,14 +5,22 @@ from data_prep_functions import get_weekend_box_office
 from data_prep_functions import prepare_data
 
 '''save data on json'''
-end_date = date(2020,2,29) # 2010 ~ 2019 + 2020 Jan
-get_weekend_box_office(end_date,numdays= 3712, # 3650 + 31 (Jan) + 29 (Feb) + 2 (leap year)
+# 2010 - 2019
+# end_date = date(2020,2,29) # 2010 ~ 2019 + 2020 Jan
+# num_days = 3712 # 3650 + 31 (Jan) + 29 (Feb) + 2 (leap year)
+
+# 2023
+end_date = date(2023,1,31)
+num_days = 395 # 365 + 31 (Jan) + 29 (Feb)
+
+
+get_weekend_box_office(end_date,numdays= num_days,
                        commercial = "Y", nation = "F", filename = "commercial_foreign.json")
-get_weekend_box_office(end_date,numdays= 3712, # 3650 + 31 (Jan) + 29 (Feb) + 2 (leap year)
+get_weekend_box_office(end_date,numdays= num_days,
                        commercial = "Y", nation = "K", filename = "commercial_korean.json")
-get_weekend_box_office(end_date,numdays= 3712, # 3650 + 31 (Jan) + 29 (Feb) + 2 (leap year)
+get_weekend_box_office(end_date,numdays= num_days,
                        commercial = "N", nation = "F", filename = "noncommercial_foreign.json")
-get_weekend_box_office(end_date,numdays= 3712, # 3650 + 31 (Jan) + 29 (Feb) + 2 (leap year)
+get_weekend_box_office(end_date,numdays= num_days,
                        commercial = "N", nation = "K", filename = "noncommercial_korean.json")
 
 
