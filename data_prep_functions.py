@@ -7,7 +7,7 @@ from time import sleep
 import pandas as pd
 from sklearn.preprocessing import MultiLabelBinarizer
 
-def get_weekend_box_office(end_date:date,numdays:int, commercial = "Y", nation = "F", filename = f"{datetime.now()}.json"):
+def get_weekend_box_office(end_date:date,numdays:int, noncommercial = "Y", nation = "F", filename = f"{datetime.now()}.json"):
     start = datetime.now()
     date_list = [str(end_date - timedelta(days=x)).replace('-', '') for x in range(0, numdays, 7)]
     # print(f"dates:{date_list[-1]}~{date_list[0]}")
@@ -16,7 +16,7 @@ def get_weekend_box_office(end_date:date,numdays:int, commercial = "Y", nation =
     for date in date_list:
         path = ("http://kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchWeeklyBoxOfficeList.json"
                 + "?key=d3e95adbe4f2171c5c869d03afa93dae" # keys : d3e95adbe4f2171c5c869d03afa93dae / 9511b15ed35f976dff1642647019125c
-                + "&multiMovieYn=" + commercial
+                + "&multiMovieYn=" + noncommercial
                 + "&repNationCd=" + nation
                 + "&targetDt=" + date)
 
@@ -90,12 +90,22 @@ def prepare_data(data):
     # data.drop(data[(data["OpenDate"] > date(2023, 12, 31))].index, inplace=True)
     # data.drop(data[(data["OpenDate"]) < date(2023, 1, 1)].index, inplace=True)
 
+    # 2020 Jan
+    data.drop(data[(data["OpenDate"] > date(2020, 1, 31))].index, inplace=True)
+    data.drop(data[(data["OpenDate"]) < date(2020, 1, 1)].index, inplace=True)
+
     # 2020 Feb
-    data.drop(data[(data["OpenDate"] > date(2020, 2, 29))].index, inplace=True)
-    data.drop(data[(data["OpenDate"]) < date(2020, 2, 1)].index, inplace=True)
+    # data.drop(data[(data["OpenDate"] > date(2020, 2, 29))].index, inplace=True)
+    # data.drop(data[(data["OpenDate"]) < date(2020, 2, 1)].index, inplace=True)
+
+    # 2020 Mar
+    # data.drop(data[(data["OpenDate"] > date(2020, 3, 31))].index, inplace=True)
+    # data.drop(data[(data["OpenDate"]) < date(2020, 3, 1)].index, inplace=True)
+
 
     print(f"Cleaned data length:{len(data)}")
     return data
+
 
 
 def get_movie_info(moviecode_list, filename = f"{datetime.now()}.json"):

@@ -9,7 +9,7 @@ from data_prep_functions import standardize_type_name
 from data_prep_functions import standardize_nation_name
 from data_prep_functions import standardize_ratings
 from data_prep_functions import one_hot_encode_column
-from score_scrap_function import get_star_rating
+from data_prep_score_scrap_function import get_star_rating
 '''---------------------------------------------------------'''
 '''Display setting'''
 # display all columns
@@ -153,7 +153,7 @@ movie_data = movie_data.merge(
 '''Movie Data 추가조정'''
 # 안 중요한 칼럼 드롭
 movie_data.drop(columns=['production_companies','importation_companies'], inplace = True)
-movie_data.drop(columns = ['prod_year','movie_code','movie_name','movie_name_en','open_date','open_week','FirstBOWeek'], inplace = True)
+movie_data.drop(columns = ['prod_year','movie_name_en','open_date','open_week','FirstBOWeek'], inplace = True)
 
 # Pre One-Hot Encoding
 movie_data['distribution_companies'] = movie_data['distribution_companies'].apply(lambda x: categorize_companies(x))
@@ -161,6 +161,7 @@ movie_data['type'] = movie_data['type'].apply(lambda x: standardize_type_name(x)
 movie_data['nation'] = movie_data['nation'].apply(lambda x: standardize_nation_name(x))
 movie_data['rating'] = movie_data['rating'].apply(lambda x: standardize_ratings(x))
 
+movie_data.drop_duplicates(inplace = True)
 
 # One-Hot Encoding
 columns_to_encode = [
@@ -202,21 +203,21 @@ movie_data.to_csv('data/movie_data.csv')
 # korean commercial films
 movie_data_ck = movie_data[movie_data['BOCategory_ck'] == 1]
 movie_data_ck.drop(columns = ['BOCategory_ck','BOCategory_cf','BOCategory_nk','BOCategory_nf'])
-movie_data_ck.to_csv('data/movie_data_ck.csv')
+movie_data_ck.to_csv('data/commercial korean.csv')
 
 # foreign commercial films
 movie_data_cf = movie_data[movie_data['BOCategory_cf'] == 1]
 movie_data_cf.drop(columns = ['BOCategory_ck','BOCategory_cf','BOCategory_nk','BOCategory_nf'])
-movie_data_cf.to_csv('data/movie_data_cf.csv')
+movie_data_cf.to_csv('data/commercial foreign.csv')
 
 # korean noncommercial films
 movie_data_nk = movie_data[movie_data['BOCategory_nk'] == 1]
 movie_data_nk.drop(columns = ['BOCategory_ck','BOCategory_cf','BOCategory_nk','BOCategory_nf'])
-movie_data_nk.to_csv('data/movie_data_nk.csv')
+movie_data_nk.to_csv('data/noncommercial korean.csv')
 
 # foreign noncommercial films
 movie_data_nf = movie_data[movie_data['BOCategory_nf'] == 1]
 movie_data_nf.drop(columns = ['BOCategory_ck','BOCategory_cf','BOCategory_nk','BOCategory_nf'])
-movie_data_nf.to_csv('data/movie_data_nf.csv')
+movie_data_nf.to_csv('data/noncommercial foreign.csv')
 
 '''-------------------------------------------------------------------------------------------'''

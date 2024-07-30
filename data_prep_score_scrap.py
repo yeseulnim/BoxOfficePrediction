@@ -2,7 +2,7 @@ import json
 import pandas as pd
 
 from data_prep_functions import extract_movie_info
-from score_scrap_function import get_star_rating
+from data_prep_score_scrap_function import get_star_rating
 
 '''---------------------------------------------------------'''
 '''Display setting'''
@@ -26,7 +26,7 @@ f.close()
 '''------------------------------------------------------'''
 '''Get Star Ratings'''
 
-movie_infos = [movie_info_1, movie_info_2] # 향후 movie_info_1 추가한 코드로 수정
+movie_infos = [movie_info_1, movie_info_2]
 for ind, info in enumerate(movie_infos):
 
     data = pd.DataFrame([extract_movie_info(movie) for movie in info])
@@ -47,6 +47,6 @@ for ind, info in enumerate(movie_infos):
     data['star_ratings'] = star_ratings
     '''-----------------------------------------------------'''
     '''Save into CSV'''
-    data.to_csv(f"data/movie_data_{ind}.csv")
+    data.to_csv(f"data/movie_data_{ind+1}.csv")
 
 '''--------------------------------------------------------------------------'''

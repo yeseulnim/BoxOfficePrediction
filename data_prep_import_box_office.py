@@ -13,18 +13,27 @@ from data_prep_functions import prepare_data
 # end_date = date(2024,2,29)
 # num_days = 395 # 365 + 31 (Jan) + 29 (Feb)
 
+# 2020 Jan
+end_date = date(2020,3,31)
+num_days = 91 # 31(Jan) + 29 (Feb) + 31 (Mar)
+
 # 2020 Feb
-end_date = date(2020,4,30)
-num_days = 90 # 29 (Feb) + 31 (Mar) + 30 (Apr)
+# end_date = date(2020,4,30)
+# num_days = 90 # 29 (Feb) + 31 (Mar) + 30 (Apr)
+
+# 2020 March
+# end_date = date(2020,5,31)
+# num_days = 92 # 31 (Mar) + 30 (Apr) + 31 (May)
+
 
 get_weekend_box_office(end_date,numdays= num_days,
-                       commercial = "Y", nation = "F", filename = "commercial_foreign.json")
+                       noncommercial = "Y", nation = "F", filename = "commercial_foreign.json")
 get_weekend_box_office(end_date,numdays= num_days,
-                       commercial = "Y", nation = "K", filename = "commercial_korean.json")
+                       noncommercial = "Y", nation = "K", filename = "commercial_korean.json")
 get_weekend_box_office(end_date,numdays= num_days,
-                       commercial = "N", nation = "F", filename = "noncommercial_foreign.json")
+                       noncommercial = "N", nation = "F", filename = "noncommercial_foreign.json")
 get_weekend_box_office(end_date,numdays= num_days,
-                       commercial = "N", nation = "K", filename = "noncommercial_korean.json")
+                       noncommercial = "N", nation = "K", filename = "noncommercial_korean.json")
 
 
 '''import data from json'''

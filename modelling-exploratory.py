@@ -2,24 +2,14 @@ import os
 import pandas as pd
 import numpy as np
 
-from sklearn.model_selection import train_test_split
 from modelling_functions import get_X_and_y
-from modelling_functions import regression_acc
-from modelling_functions import histogram_two
-from modelling_functions import randomforest_acc
-from modelling_functions import xgboost_acc
+from modelling_functions import regression_gridsearch_cv
+from modelling_functions import randomforest_gridsearch_cv
+from modelling_functions import xgboost_gridsearch_cv
+from modelling_functions import histogram_four
 
 import xgboost
 from xgboost import XGBRegressor
-from sklearn.ensemble import RandomForestRegressor
-
-from sklearn.model_selection import GridSearchCV
-from sklearn.model_selection import train_test_split
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
-import sklearn.metrics as metrics
-
-from sklearn.feature_selection import SelectFromModel
 
 import matplotlib.pyplot as plt
 
@@ -39,8 +29,8 @@ plt.rcParams['axes.unicode_minus']=False
 '''Exploratory Data Analysis'''
 
 movie_data_list = ['commercial korean.csv', 'commercial foreign.csv',
-              'noncommercial korean.csv', 'noncommercial foreign.csv']
-
+                   'noncommercial korean.csv', 'noncommercial foreign.csv']
+'''
 # Create two figures, one for AudienceAcc and one for AudienceCount
 fig_acc, axs_acc = plt.subplots(2, 2, figsize=(10, 7))
 fig_count, axs_count = plt.subplots(2, 2, figsize=(10, 7))
@@ -70,10 +60,10 @@ fig_count.suptitle("First Day Audience Count", fontsize=16)
 # Adjust layout and save figures
 fig_acc.savefig('figures/all_movies_AudienceAcc.png')
 fig_count.savefig('figures/all_movies_AudienceCount.png')
-
+'''
 #plt.show()
 '''---------------------------------------------------------'''
-
+'''
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))
 
 colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728']
@@ -103,49 +93,15 @@ for ax, column in zip([ax1, ax2], ['AudienceAcc', 'AudienceCount']):
 plt.tight_layout()
 fig.savefig('figures/stacked_movie_data_histograms.png')
 #plt.show()
-
+'''
 
 '''---------------------------------------------------------'''
 
 
 '''-----------------------------------------------------------'''
-'''Gridsearch on XGBoost and Random Forest'''
-'''
+
 X, y = get_X_and_y('movie_data.csv')
-def modelfit(pip_xgb, grid_param_xgb, x, y) :
-    gs_xgb = (GridSearchCV(estimator=pip_xgb,
-                        param_grid=grid_param_xgb,
-                        cv=4,
-                        # scoring='neg_mean_squared_error',
-                        scoring='neg_root_mean_squared_error',
-                        n_jobs=-1,
-                        verbose=10))
-
-    gs_xgb = gs_xgb.fit(x, y)
-    print('Train Done.')
-
-    #Predict training set:
-    y_pred = gs_xgb.predict(x)
-
-    #Print model report:
-    print("\nModel Report")
-    print("\nCV 결과 : ", gs_xgb.cv_results_)
-    print("\n베스트 정답률 : ", gs_xgb.best_score_)
-    print("\n베스트 파라미터 : ", gs_xgb.best_params_)
-
-
-pip_xgb1 = Pipeline([('scl', StandardScaler()),
-    ('reg', RandomForestRegressor())])
-grid_param_xgb1 = {
-    'reg__max_depth' : [5, 10, 15],
-    'reg__criterion' : ['squared_error', 'friedman_mse', 'poisson'],
-    'reg__min_samples_leaf' : [3, 5, 7],
-    'reg__min_samples_split' : [3, 5, 7]
-}
-
-modelfit(pip_xgb1, grid_param_xgb1, X, y)
-'''
-
+X.drop(columns=['movie_code', 'movie_name'], inplace=True)
 
 
 '''-----------------------------------------------------------'''
@@ -163,23 +119,18 @@ xgb_regression_results = []
 for file in movie_data_list:
     X, y = get_X_and_y(file)
 
-    '''train_test_split'''
-    X_train, X_test, y_train, y_test = train_test_split(X,
-                                                        y,
-                                                        test_size=0.2,
-                                                        shuffle=True,
-                                                        random_state=0)
-    '''linear regression'''
-    lin_model_1, lin_model_2, simple_result, multiple_result = regression_acc(X_train, X_test, y_train, y_test)
-    '''random forest'''
-    rf_model, rf_result = randomforest_acc(X_train, X_test, y_train, y_test)
+    X.drop(columns = ['movie_code', 'movie_name'], inplace = True)
 
+    '''linear regression'''
+    lin_model_1, lin_model_2, simple_result, multiple_result = regression_gridsearch_cv(X,y)
+    '''random forest'''
+    rf_model, rf_result = randomforest_gridsearch_cv(X,y)
     '''xgboost'''
-    xgb_model, xgb_result = xgboost_acc(X_train, X_test, y_train, y_test)
+    xgb_model, xgb_result = xgboost_gridsearch_cv(X,y)
 
     '''xgboost feature importance'''
     xgb = XGBRegressor()
-    xgb.fit(X_train, y_train)
+    xgb.fit(X,y)
     fig, ax = plt.subplots(figsize=(14, 6))
     xgboost.plot_importance(xgb, ax=ax, importance_type='gain',
                             title=f'feature importance : {file.split('.')[0]} films', max_num_features=10)
@@ -199,20 +150,19 @@ for file in movie_data_list:
 
 '''---------------------------------------------------------'''
 '''Plot'''
-'''Linear Regression'''
-histogram_two(simple_regression_result, multiple_regression_result,
-              'First Weekend Audience', 'Multiple Variables',
-              'Prediction Accuracy for Final Audience Numbers (Linear Regression)',
-              'regression_result.png')
-
+'''All in One'''
+x_ticks = ['All Movies','Commercial Korean', 'Commercial Foreign','Non-Commercial Korean','Non-Commercial Foreign']
+histogram_four(simple_regression_result,multiple_regression_result,rf_regression_result,xgb_regression_results,
+               'Simple Regression', 'Multiple Regression','Random Forest','XGBoost',
+               x_ticks, 'Prediction Accuracy for Final Audience Numbers',
+               'regression_result_all')
 
 '''Plot'''
-'''RF & XGBoost Regression'''
-histogram_two(rf_regression_result, xgb_regression_results,
-              'Random Forest', 'XGBoost',
-              'Prediction Accuracy for Final Audience Numbers (Ensemble)',
-              'regression_result_ensemble.png')
-
+'''Just three'''
+histogram_four(simple_regression_result[:3],multiple_regression_result[:3],rf_regression_result[:3],xgb_regression_results[:3],
+               'Simple Regression', 'Multiple Regression','Random Forest','XGBoost',
+               x_ticks[:3], 'Prediction Accuracy for Final Audience Numbers (Commercial)',
+               'regression_result_commercial')
 
 '''---------------------------------------------------------'''
 '''Save Accuracy on CSV'''
@@ -234,6 +184,5 @@ df.to_csv('data/regression_results.csv')
 print("CSV file 'regression_results.csv' has been created.")
 
 '''---------------------------------------------------------'''
-'''Save Models'''
-models = []
+
 

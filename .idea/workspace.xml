@@ -4,11 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cf6318d3-8f4e-4453-8e29-142ec4ae4287" name="Changes" comment="- Added XGBoost&#10;- Refined clustering&#10;- Added predictions per cluster&#10;- Added data scrapping option for 2023 movies">
+    <list default="true" id="cf6318d3-8f4e-4453-8e29-142ec4ae4287" name="Changes" comment="- Fixed data scrapping option for 2023 movies&#10;- Added data scrapping option for 2020 movies">
+      <change afterPath="$PROJECT_DIR$/modelling_model_application.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/box_office_data_import.py" beforeDir="false" afterPath="$PROJECT_DIR$/box_office_data_import.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/box_office_data_import.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_prep_import_box_office.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_prep.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_prep.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data_prep_functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_prep_functions.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/movie_data_import.py" beforeDir="false" afterPath="$PROJECT_DIR$/movie_data_import.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modelling-clustering.py" beforeDir="false" afterPath="$PROJECT_DIR$/modelling-clustering.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modelling-exploratory.py" beforeDir="false" afterPath="$PROJECT_DIR$/modelling-exploratory.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modelling_functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/modelling_functions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/movie_data_import.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_prep_import_movie_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/score_scrap.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_prep_score_scrap.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/score_scrap_function.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_prep_score_scrap_function.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,14 +43,19 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;Python.box_office_data_WEEKLY_import.executor&quot;: &quot;Run&quot;,
     &quot;Python.box_office_data_import.executor&quot;: &quot;Run&quot;,
     &quot;Python.data_import.executor&quot;: &quot;Run&quot;,
     &quot;Python.data_prep.executor&quot;: &quot;Run&quot;,
+    &quot;Python.data_prep_import_box_office.executor&quot;: &quot;Run&quot;,
+    &quot;Python.data_prep_import_movie_data.executor&quot;: &quot;Run&quot;,
+    &quot;Python.data_prep_score_scrap.executor&quot;: &quot;Run&quot;,
     &quot;Python.main.executor&quot;: &quot;Run&quot;,
     &quot;Python.modelling-clustering.executor&quot;: &quot;Run&quot;,
     &quot;Python.modelling-exploratory.executor&quot;: &quot;Run&quot;,
     &quot;Python.modelling.executor&quot;: &quot;Run&quot;,
     &quot;Python.modelling_functions.executor&quot;: &quot;Run&quot;,
+    &quot;Python.modelling_model_application.executor&quot;: &quot;Run&quot;,
     &quot;Python.movie_data_import.executor&quot;: &quot;Run&quot;,
     &quot;Python.score_scrap.executor&quot;: &quot;Run&quot;,
     &quot;Python.score_scrap_function.executor&quot;: &quot;Run&quot;,
@@ -123,7 +135,15 @@
       <option name="project" value="LOCAL" />
       <updated>1721715099592</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="- Fixed data scrapping option for 2023 movies&#10;- Added data scrapping option for 2020 movies">
+      <option name="closed" value="true" />
+      <created>1721731487450</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1721731487450</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -133,6 +153,7 @@
     <MESSAGE value="- Modelling : Linear Regression, Multiple Regression, Random Forest Regression &#10;+ Plotting&#10;&#10;- Created Score Scraping function" />
     <MESSAGE value="- Added Star Ratings&#10;- Excluded movies with zero star ratings" />
     <MESSAGE value="- Added XGBoost&#10;- Refined clustering&#10;- Added predictions per cluster&#10;- Added data scrapping option for 2023 movies" />
-    <option name="LAST_COMMIT_MESSAGE" value="- Added XGBoost&#10;- Refined clustering&#10;- Added predictions per cluster&#10;- Added data scrapping option for 2023 movies" />
+    <MESSAGE value="- Fixed data scrapping option for 2023 movies&#10;- Added data scrapping option for 2020 movies" />
+    <option name="LAST_COMMIT_MESSAGE" value="- Fixed data scrapping option for 2023 movies&#10;- Added data scrapping option for 2020 movies" />
   </component>
 </project>

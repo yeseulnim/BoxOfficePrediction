@@ -2,15 +2,14 @@ import os
 import pandas as pd
 import numpy as np
 
-from sklearn.cluster import KMeans
-from kneed import KneeLocator
-
 from sklearn.model_selection import train_test_split
 from modelling_functions import get_X_and_y
 from modelling_functions import regression_acc
 from modelling_functions import histogram_two_for_clusters
+from modelling_functions import histogram_four_for_clusters
 from modelling_functions import randomforest_acc
 from modelling_functions import xgboost_acc
+from modelling_functions import kmeans_clustering
 
 import xgboost
 from xgboost import XGBRegressor
@@ -32,7 +31,7 @@ plt.rcParams['axes.unicode_minus']=False
 '''---------------------------------------------------------'''
 '''Exploratory Data Analysis'''
 
-movie_data_list = ['noncommercial korean.csv', 'noncommercial foreign.csv']
+movie_data_list = ['commercial korean.csv', 'commercial foreign.csv']
 
 '''---------------------------------------------------------'''
 '''Clustering'''
@@ -40,67 +39,12 @@ movie_data_list = ['noncommercial korean.csv', 'noncommercial foreign.csv']
 data_directory = 'data'
 figure_directory = 'figures'
 
-
-def kmeans_clustering(file_name):
-    # Construct the full file path
-    file_path = os.path.join(data_directory, file_name)
-
-    # Read the CSV file
-    df = pd.read_csv(file_path)
-
-    # Preprocess the data
-    columns_to_drop = 'AudienceAcc'
-    columns_to_drop = [col for col in columns_to_drop if col in df.columns]
-    X = df.drop(columns_to_drop, axis=1, errors='ignore')
-
-    # Perform elbow method
-    inertias = []
-    k_range = range(1, 11)
-
-    for k in k_range:
-        kmeans = KMeans(n_clusters=k, random_state=42)
-        kmeans.fit(X)
-        inertias.append(kmeans.inertia_)
-
-    # Plot elbow curve
-    plt.figure(figsize=(10, 6))
-    plt.plot(k_range, inertias, 'bx-')
-    plt.xlabel('k')
-    plt.ylabel('Inertia')
-    plt.title(f'Elbow Method for Optimal k - {file_name}')
-    plt.savefig(os.path.join(figure_directory, f'elbow_graph_{file_name.split(".")[0]}.png'))
-    plt.close()
-
-    cluster_size = 3
-
-    kmeans = KMeans(n_clusters=cluster_size, random_state=42)
-    cluster_labels = kmeans.fit_predict(X)
-
-
-    df['Cluster'] = cluster_labels
-
-    # Save movies in each cluster to separate CSV files
-    for i in range(cluster_size):
-        cluster_df = df[df['Cluster'] == i]
-        output_filename = f"{file_name.split('.')[0]}_cluster_{i}.csv"
-        output_path = os.path.join(data_directory, output_filename)
-        cluster_df.to_csv(output_path, index=False)
-
-    # Get cluster centers and add to dataframe
-    cluster_centers = kmeans.cluster_centers_
-    centroids_df = pd.DataFrame(cluster_centers, columns=X.columns)
-    centroids_df['file_name'] = file_name
-    centroids_df['cluster'] = range(len(centroids_df))
-
-    return centroids_df
-
-
 # Initialize an empty list to store the best k-means results
 best_kmeans_results = []
 
 # Perform k-means clustering for each file
 for data in movie_data_list:
-    km = kmeans_clustering(data)
+    km = kmeans_clustering(data_directory, data)
     best_kmeans_results.append(km)
 
 # Combine all results into a single DataFrame
@@ -119,10 +63,10 @@ kmstack.to_csv('data/best_centroids.csv', index=False)
 
 
 movie_data_list = [
-                   'noncommercial korean_cluster_0.csv', 'noncommercial korean_cluster_1.csv',
-                   'noncommercial korean_cluster_2.csv',
-                   'noncommercial foreign_cluster_0.csv','noncommercial foreign_cluster_1.csv',
-                   'noncommercial foreign_cluster_2.csv']
+                   'commercial korean_cluster_0.csv', 'commercial korean_cluster_1.csv',
+                   'commercial korean_cluster_2.csv',
+                   'commercial foreign_cluster_0.csv','commercial foreign_cluster_1.csv',
+                   'commercial foreign_cluster_2.csv']
 
 # Create two figures, one for AudienceAcc and one for AudienceCount
 fig_acc, axs_acc = plt.subplots(2, 3, figsize=(10, 7))
@@ -170,12 +114,15 @@ xgb_regression_results = []
 for file in movie_data_list:
     X, y = get_X_and_y(file)
 
+    X.drop(columns = ['movie_code', 'movie_name'], inplace = True)
+
     '''train_test_split'''
     X_train, X_test, y_train, y_test = train_test_split(X,
                                                         y,
                                                         test_size=0.2,
                                                         shuffle=True,
                                                         random_state=0)
+
     '''linear regression'''
     lin_model_1, lin_model_2, simple_result, multiple_result = regression_acc(X_train, X_test, y_train, y_test)
     '''random forest'''
@@ -218,6 +165,12 @@ histogram_two_for_clusters(rf_regression_result, xgb_regression_results,
               'Prediction Accuracy for Final Audience Numbers (Ensemble)',
               'clustered_regression_result_ensemble.png')
 
+'''Plot'''
+'''all four'''
+histogram_four_for_clusters(simple_regression_result,multiple_regression_result,rf_regression_result,xgb_regression_results,
+               'First Weekend Audience', 'Multiple Regression','Random Forest','XGBoost',
+               'Prediction Accuracy for Final Audience Numbers',
+               'clustered_regression_result_all')
 
 
 '''---------------------------------------------------------'''
